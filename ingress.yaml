@@ -1,0 +1,25 @@
+#gcloud compute ssl-certificates create themis-cer --certificate STAR_themis-technology_com.cer --private-key STAR_themis-technology_com.key
+#gcloud compute ssl-certificates list
+
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-ingress-cookie-v2
+  namespace: pdpa
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "pdpa-cookiev2-dev-global-ip"
+    kubernetes.io/ingress.allow-http: "true"
+    ingress.gcp.kubernetes.io/pre-shared-cert: "wildcard-bundle-2023-2024"
+
+spec:
+  rules:
+  - host: cookie-dev.themis-technology.com
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        backend:
+          service:
+            name: backend-themis-rabbitmq-server
+            port:
+              name: https
